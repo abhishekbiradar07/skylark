@@ -101,7 +101,7 @@
 
 ### Authentication
 ```bash
-Authorization: Bearer gsk_7CzuP51hqU5g2qCBGZa0WGdyb3FYXZn5eiIJ7i7HjJ3uJdvnfFEmllm
+Authorization: Bearer GROQ_API_KEYllm
 ```
 
 ### GraphQL Endpoint
