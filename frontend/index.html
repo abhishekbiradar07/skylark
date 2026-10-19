@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skylark Drones - BI Agent</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 1200px;
+            width: 100%;
+            padding: 40px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            color: #2d3748;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #718096;
+            font-size: 1.1rem;
+        }
+        
+        .status {
+            background: #f0fff4;
+            border: 2px solid #68d391;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .status h2 {
+            color: #2f855a;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+        }
+        
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .status-icon {
+            width: 30px;
+            height: 30px;
+            background: #68d391;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .status-text {
+            color: #2d3748;
+            font-size: 0.95rem;
+        }
+        
+        .progress {
+            margin-bottom: 30px;
+        }
+        
+        .progress h2 {
+            color: #2d3748;
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+        }
+        
+        .progress-item {
+            margin-bottom: 15px;
+        }
+        
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            color: #4a5568;
+            font-size: 0.9rem;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s ease;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        
+        .feature-card {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 25px;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.1);
+        }
+        
+        .feature-card h3 {
+            color: #2d3748;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+        
+        .feature-card p {
+            color: #718096;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #e2e8f0;
+        }
+        
+        .footer p {
+            color: #718096;
+            font-size: 0.9rem;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            background: #667eea;
+            color: white;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚁 Skylark Drones BI Agent</h1>
+            <p>Business Intelligence Agent - Technical Assignment</p>
+            <span class="badge">Development Build</span>
+        </div>
+        
+        <div class="status">
+            <h2>✅ System Status</h2>
+            <div class="status-grid">
+                <div class="status-item">
+                    <div class="status-icon">✓</div>
+                    <div class="status-text">Monday.com Connected</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-icon">✓</div>
+                    <div class="status-text">Backend Running</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-icon">✓</div>
+                    <div class="status-text">Data Processing Active</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-icon">✓</div>
+                    <div class="status-text">Analytics Engine Ready</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="progress">
+            <h2>📊 Implementation Progress</h2>
+            
+            <div class="progress-item">
+                <div class="progress-label">
+                    <span>Backend Infrastructure</span>
+                    <span>100%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 100%"></div>
+                </div>
+            </div>
+            
+            <div class="progress-item">
+                <div class="progress-label">
+                    <span>Monday.com Integration</span>
+                    <span>100%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 100%"></div>
+                </div>
+            </div>
+            
+            <div class="progress-item">
+                <div class="progress-label">
+                    <span>Data Normalization Engine</span>
+                    <span>100%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 100%"></div>
+                </div>
+            </div>
+            
+            <div class="progress-item">
+                <div class="progress-label">
+                    <span>Analytics Calculations</span>
+                    <span>100%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 100%"></div>
+                </div>
+            </div>
+            
+            <div class="progress-item">
+                <div class="progress-label">
+                    <span>AI Agent Layer</span>
+                    <span>60%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 60%"></div>
+                </div>
+            </div>
+            
+            <div class="progress-item">
+                <div class="progress-label">
+                    <span>Frontend Dashboard</span>
+                    <span>40%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 40%"></div>
+                </div>
+            </div>
+        </div>
+        
+        <h2 style="color: #2d3748; margin-bottom: 20px; font-size: 1.3rem;">🎯 Core Features</h2>
+        <div class="features">
+            <div class="feature-card">
+                <h3>📊 Live Monday.com Integration</h3>
+                <p>Dynamically queries Monday.com boards (Deals: 5030845871, Work Orders: 5030845875) for real-time data.</p>
+            </div>
+            
+            <div class="feature-card">
+                <h3>🧹 Dynamic Data Cleaning</h3>
+                <p>Normalizes messy data in-memory without modifying source. Handles 346 deals and 176 work orders.</p>
+            </div>
+            
+            <div class="feature-card">
+                <h3>📈 Deterministic Analytics</h3>
+                <p>Python-based calculations for pipeline (₹230.5 Cr), financials (₹10.7 Cr billed), and operations metrics.</p>
+            </div>
+            
+            <div class="feature-card">
+                <h3>🔍 Data Quality Transparency</h3>
+                <p>Tracks missing values, invalid data, and quality issues. Clearly communicates data limitations.</p>
+            </div>
+            
+            <div class="feature-card">
+                <h3>🌐 Cross-Board Analysis</h3>
+                <p>Sector-level analysis across Deals and Work Orders. No unreliable deal-level joins.</p>
+            </div>
+            
+            <div class="feature-card">
+                <h3>🤖 AI-Powered Queries</h3>
+                <p>Natural language interface for executive-level questions with LLM interpretation of results.</p>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p><strong>Skylark Drones Technical Assignment</strong></p>
+            <p>Monday.com Business Intelligence Agent - August 25, 2026</p>
+            <p style="margin-top: 10px; font-size: 0.85rem;">
+                Boards: Deals (346 records) | Work Orders (176 records) | Live data integration
+            </p>
+        </div>
+    </div>
+</body>
+</html>

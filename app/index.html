@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skylark Drones - Business Intelligence Agent</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #0a0e1a;
+            color: #e8eaed;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        .card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(102, 126, 234, 0.5);
+        }
+        .metric-card {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+        }
+        .chat-message {
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 3px solid #667eea;
+        }
+        .btn-primary {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        }
+        .btn-primary:hover {
+            background: linear-gradient(90deg, #5568d3 0%, #653a8a 100%);
+        }
+        .sidebar {
+            background: rgba(10, 14, 26, 0.95);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .loading {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .5; }
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Sidebar -->
+    <div class="fixed left-0 top-0 h-full w-64 sidebar p-6 overflow-y-auto">
+        <div class="mb-8">
+            <h1 class="text-2xl font-bold gradient-bg bg-clip-text text-transparent">
+                🚁 Skylark BI
+            </h1>
+            <p class="text-sm text-gray-400 mt-1">Business Intelligence Agent</p>
+        </div>
+        
+        <nav class="space-y-2">
+            <a href="#overview" onclick="showPage('overview')" class="block px-4 py-3 rounded-lg card cursor-pointer">
+                📊 Overview
+            </a>
+            <a href="#chat" onclick="showPage('chat')" class="block px-4 py-3 rounded-lg card cursor-pointer">
+                💬 Ask Agent
+            </a>
+            <a href="#pipeline" onclick="showPage('pipeline')" class="block px-4 py-3 rounded-lg card cursor-pointer">
+                📈 Pipeline
+            </a>
+            <a href="#operations" onclick="showPage('operations')" class="block px-4 py-3 rounded-lg card cursor-pointer">
+                ⚙️ Operations
+            </a>
+            <a href="#financial" onclick="showPage('financial')" class="block px-4 py-3 rounded-lg card cursor-pointer">
+                💰 Financial
+            </a>
+        </nav>
+        
+        <div class="mt-8 p-4 card rounded-lg">
+            <h3 class="text-sm font-semibold mb-2">Data Sources</h3>
+            <div class="space-y-2 text-sm text-gray-400">
+                <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                    Deals (346)
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                    Work Orders (176)
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="ml-64 p-8">
+        <!-- Overview Page -->
+        <div id="overview-page" class="page">
+            <h2 class="text-3xl font-bold mb-2">Business Intelligence Overview</h2>
+            <p class="text-gray-400 mb-8">Real-time insights from Monday.com data</p>
+            
+            <!-- Metrics Grid -->
+            <div class="grid grid-cols-4 gap-6 mb-8">
+                <div class="metric-card p-6 rounded-xl">
+                    <div class="text-gray-400 text-sm mb-2">Total Pipeline</div>
+                    <div class="text-3xl font-bold">₹78.3 Cr</div>
+                    <div class="text-sm text-green-400 mt-2">↑ 111 deals</div>
+                </div>
+                <div class="metric-card p-6 rounded-xl">
+                    <div class="text-gray-400 text-sm mb-2">Billed Value</div>
+                    <div class="text-3xl font-bold">₹10.7 Cr</div>
+                    <div class="text-sm text-blue-400 mt-2">113 work orders</div>
+                </div>
+                <div class="metric-card p-6 rounded-xl">
+                    <div class="text-gray-400 text-sm mb-2">Collection Rate</div>
+                    <div class="text-3xl font-bold">71.4%</div>
+                    <div class="text-sm text-yellow-400 mt-2">₹9.0 Cr collected</div>
+                </div>
+                <div class="metric-card p-6 rounded-xl">
+                    <div class="text-gray-400 text-sm mb-2">Completion</div>
+                    <div class="text-3xl font-bold">66.5%</div>
+                    <div class="text-sm text-purple-400 mt-2">117/176 WOs</div>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="grid grid-cols-2 gap-6 mb-8">
+                <div class="card p-6 rounded-xl">
+                    <h3 class="text-lg font-semibold mb-4">Pipeline by Sector</h3>
+                    <canvas id="pipelineChart"></canvas>
+                </div>
+                <div class="card p-6 rounded-xl">
+                    <h3 class="text-lg font-semibold mb-4">Operations Status</h3>
+                    <canvas id="operationsChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Quick Insights -->
+            <div class="card p-6 rounded-xl">
+                <h3 class="text-lg font-semibold mb-4">Key Insights</h3>
+                <div class="space-y-3">
+                    <div class="p-4 bg-green-500/10 border border-green-500/30 rounded-lg">
+                        <strong class="text-green-400">Strong Performance:</strong> Renewables shows ₹7.7 Cr execution vs ₹4.0 Cr pipeline - excellent execution strength
+                    </div>
+                    <div class="p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+                        <strong class="text-yellow-400">Gap Alert:</strong> Railways has ₹10.6 Cr pipeline but only ₹0.2 Cr execution - investigation needed
+                    </div>
+                    <div class="p-4 bg-blue-500/10 border border-blue-500/30 rounded-lg">
+                        <strong class="text-blue-400">Data Quality:</strong> 67.9% of deals missing values - filtered transparently in calculations
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Page -->
+        <div id="chat-page" class="page hidden">
+            <h2 class="text-3xl font-bold mb-2">Ask the Agent</h2>
+            <p class="text-gray-400 mb-8">Natural language business intelligence queries</p>
+            
+            <div class="grid grid-cols-3 gap-6">
+                <div class="col-span-2">
+                    <div id="chatMessages" class="card p-6 rounded-xl h-[600px] overflow-y-auto mb-4">
+                        <div class="chat-message p-4 rounded-lg mb-4">
+                            <div class="text-sm text-gray-400 mb-2">Agent</div>
+                            <div>Hello! I'm your Business Intelligence Agent. I can help you with:
+                                <ul class="list-disc ml-5 mt-2 space-y-1">
+                                    <li>Pipeline analysis and forecasting</li>
+                                    <li>Financial metrics (billed, collected, receivables)</li>
+                                    <li>Operations status and delays</li>
+                                    <li>Sector comparisons and cross-board analysis</li>
+                                </ul>
+                                <p class="mt-2">What would you like to know?</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-3">
+                        <input 
+                            type="text" 
+                            id="chatInput" 
+                            placeholder="Ask me anything about your business data..."
+                            class="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-purple-500"
+                            onkeypress="if(event.key==='Enter') sendMessage()"
+                        />
+                        <button onclick="sendMessage()" class="btn-primary px-6 py-3 rounded-lg font-semibold">
+                            Send
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="space-y-4">
+                    <div class="card p-4 rounded-xl">
+                        <h4 class="font-semibold mb-3">Suggested Questions</h4>
+                        <div class="space-y-2">
+                            <button onclick="askQuestion('What is our current pipeline?')" class="w-full text-left px-3 py-2 bg-white/5 rounded hover:bg-white/10 text-sm">
+                                What is our current pipeline?
+                            </button>
+                            <button onclick="askQuestion('How much pipeline in Mining?')" class="w-full text-left px-3 py-2 bg-white/5 rounded hover:bg-white/10 text-sm">
+                                How much pipeline in Mining?
+                            </button>
+                            <button onclick="askQuestion('Which projects are delayed?')" class="w-full text-left px-3 py-2 bg-white/5 rounded hover:bg-white/10 text-sm">
+                                Which projects are delayed?
+                            </button>
+                            <button onclick="askQuestion('Compare Mining and Renewables')" class="w-full text-left px-3 py-2 bg-white/5 rounded hover:bg-white/10 text-sm">
+                                Compare Mining and Renewables
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pipeline Page -->
+        <div id="pipeline-page" class="page hidden">
+            <h2 class="text-3xl font-bold mb-2">Pipeline Analysis</h2>
+            <p class="text-gray-400 mb-8">Sales pipeline metrics and forecasting</p>
+            
+            <div class="grid grid-cols-3 gap-6 mb-8">
+                <div class="metric-card p-6 rounded-xl">
+                    <div class="text-gray-400 text-sm mb-2">Known Pipeline</div>
+                    <div class="text-3xl font-bold">₹78.3 Cr</div>
+                    <div class="text-sm text-gray-400 mt-2">111 valued deals</div>
+                </div>
+                <div class="metric-card p-6 rounded-xl">
+                    <div class="text-gray-400 text-sm mb-2">Weighted Pipeline</div>
+                    <div class="text-3xl font-bold">₹52.1 Cr</div>
+                    <div class="text-sm text-gray-400 mt-2">Probability adjusted</div>
+                </div>
+                <div class="metric-card p-6 rounded-xl">
+                    <div class="text-gray-400 text-sm mb-2">Average Deal</div>
+                    <div class="text-3xl font-bold">₹7.1 Cr</div>
+                    <div class="text-sm text-gray-400 mt-2">Per valued deal</div>
+                </div>
+            </div>
+
+            <div class="card p-6 rounded-xl mb-6">
+                <h3 class="text-lg font-semibold mb-4">Top 5 Sectors by Pipeline</h3>
+                <div class="space-y-4">
+                    <div class="flex items-center gap-4">
+                        <div class="w-32 text-gray-400">Tender</div>
+                        <div class="flex-1 bg-white/5 rounded-full h-8 relative">
+                            <div class="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full" style="width: 68%"></div>
+                            <div class="absolute inset-0 flex items-center justify-end pr-3 text-sm font-semibold">₹53.2 Cr</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="w-32 text-gray-400">Railways</div>
+                        <div class="flex-1 bg-white/5 rounded-full h-8 relative">
+                            <div class="absolute inset-0 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full" style="width: 14%"></div>
+                            <div class="absolute inset-0 flex items-center justify-end pr-3 text-sm font-semibold">₹10.6 Cr</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="w-32 text-gray-400">Mining</div>
+                        <div class="flex-1 bg-white/5 rounded-full h-8 relative">
+                            <div class="absolute inset-0 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full" style="width: 6%"></div>
+                            <div class="absolute inset-0 flex items-center justify-end pr-3 text-sm font-semibold">₹4.6 Cr</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="w-32 text-gray-400">Renewables</div>
+                        <div class="flex-1 bg-white/5 rounded-full h-8 relative">
+                            <div class="absolute inset-0 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full" style="width: 5%"></div>
+                            <div class="absolute inset-0 flex items-center justify-end pr-3 text-sm font-semibold">₹4.0 Cr</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="w-32 text-gray-400">DSP</div>
+                        <div class="flex-1 bg-white/5 rounded-full h-8 relative">
+                            <div class="absolute inset-0 bg-gradient-to-r from-red-500 to-pink-500 rounded-full" style="width: 4%"></div>
+                            <div class="absolute inset-0 flex items-center justify-end pr-3 text-sm font-semibold">₹3.2 Cr</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Operations Page -->
+        <div id="operations-page" class="page hidden">
+            <h2 class="text-3xl font-bold mb-2">Operations Dashboard</h2>
+            <p class="text-gray-400 mb-8">Project execution and delivery metrics</p>
+            
+            <div class="grid grid-cols-4 gap-6 mb-8">
+                <div class="metric-card p-6 rounded-xl">
+                    <div class="text-gray-400 text-sm mb-2">Total WOs</div>
+                    <div class="text-3xl font-bold">176</div>
+                </div>
+                <div class="metric-card p-6 rounded-xl">
+                    <div class="text-gray-400 text-sm mb-2">Completed</div>
+                    <div class="text-3xl font-bold text-green-400">117</div>
+                </div>
+                <div class="metric-card p-6 rounded-xl">
+                    <div class="text-gray-400 text-sm mb-2">Ongoing</div>
+                    <div class="text-3xl font-bold text-blue-400">25</div>
+                </div>
+                <div class="metric-card p-6 rounded-xl">
+                    <div class="text-gray-400 text-sm mb-2">Delayed</div>
+                    <div class="text-3xl font-bold text-red-400">15</div>
+                </div>
+            </div>
+
+            <div class="card p-6 rounded-xl">
+                <h3 class="text-lg font-semibold mb-4">Operations by Sector</h3>
+                <canvas id="opsBySectorChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Financial Page -->
+        <div id="financial-page" class="page hidden">
+            <h2 class="text-3xl font-bold mb-2">Financial Dashboard</h2>
+            <p class="text-gray-400 mb-8">Billing and collection metrics</p>
+            
+            <div class="grid grid-cols-3 gap-6 mb-8">
+                <div class="metric-card p-6 rounded-xl">
+                    <div class="text-gray-400 text-sm mb-2">Total Billed</div>
+                    <div class="text-3xl font-bold">₹10.7 Cr</div>
+                    <div class="text-sm text-gray-400 mt-2">113 work orders</div>
+                </div>
+                <div class="metric-card p-6 rounded-xl">
+                    <div class="text-gray-400 text-sm mb-2">Total Collected</div>
+                    <div class="text-3xl font-bold text-green-400">₹9.0 Cr</div>
+                    <div class="text-sm text-gray-400 mt-2">71.4% rate</div>
+                </div>
+                <div class="metric-card p-6 rounded-xl">
+                    <div class="text-gray-400 text-sm mb-2">Receivables</div>
+                    <div class="text-3xl font-bold text-yellow-400">₹3.6 Cr</div>
+                    <div class="text-sm text-gray-400 mt-2">Outstanding</div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-6">
+                <div class="card p-6 rounded-xl">
+                    <h3 class="text-lg font-semibold mb-4">Financial by Sector</h3>
+                    <canvas id="financialChart"></canvas>
+                </div>
+                <div class="card p-6 rounded-xl">
+                    <h3 class="text-lg font-semibold mb-4">Collection Performance</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-gray-400">Mining</span>
+                                <span class="text-green-400">85%</span>
+                            </div>
+                            <div class="bg-white/5 rounded-full h-2">
+                                <div class="bg-green-500 h-2 rounded-full" style="width: 85%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-gray-400">Renewables</span>
+                                <span class="text-green-400">92%</span>
+                            </div>
+                            <div class="bg-white/5 rounded-full h-2">
+                                <div class="bg-green-500 h-2 rounded-full" style="width: 92%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-gray-400">Railways</span>
+                                <span class="text-yellow-400">65%</span>
+                            </div>
+                            <div class="bg-white/5 rounded-full h-2">
+                                <div class="bg-yellow-500 h-2 rounded-full" style="width: 65%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Page navigation
+        function showPage(pageName) {
+            document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+            document.getElementById(pageName + '-page').classList.remove('hidden');
+        }
+
+        // Chat functionality
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            if (!message) return;
+            
+            addChatMessage('user', message);
+            input.value = '';
+            
+            // Show loading
+            addChatMessage('agent', '<div class="loading">Analyzing data...</div>');
+            
+            try {
+                const response = await fetch('http://localhost:8000/api/chat', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({message})
+                });
+                
+                const data = await response.json();
+                
+                // Remove loading message
+                const messages = document.getElementById('chatMessages');
+                messages.removeChild(messages.lastChild);
+                
+                // Add response
+                let html = `<div>${data.answer}</div>`;
+                if (data.metrics && data.metrics.length > 0) {
+                    html += '<div class="grid grid-cols-2 gap-2 mt-4">';
+                    data.metrics.forEach(m => {
+                        html += `<div class="p-3 bg-white/5 rounded"><div class="text-xs text-gray-400">${m.label}</div><div class="text-lg font-bold">${m.value}</div></div>`;
+                    });
+                    html += '</div>';
+                }
+                addChatMessage('agent', html);
+            } catch (error) {
+                const messages = document.getElementById('chatMessages');
+                messages.removeChild(messages.lastChild);
+                addChatMessage('agent', 'Sorry, I encountered an error. Please try again.');
+            }
+        }
+
+        function askQuestion(question) {
+            document.getElementById('chatInput').value = question;
+            sendMessage();
+        }
+
+        function addChatMessage(sender, content) {
+            const messages = document.getElementById('chatMessages');
+            const div = document.createElement('div');
+            div.className = 'chat-message p-4 rounded-lg mb-4';
+            div.innerHTML = `
+                <div class="text-sm text-gray-400 mb-2">${sender === 'user' ? 'You' : 'Agent'}</div>
+                <div>${content}</div>
+            `;
+            messages.appendChild(div);
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        // Initialize charts
+        window.onload = function() {
+            // Pipeline Chart
+            new Chart(document.getElementById('pipelineChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['Tender', 'Railways', 'Mining', 'Renewables', 'DSP'],
+                    datasets: [{
+                        label: 'Pipeline (₹ Cr)',
+                        data: [53.2, 10.6, 4.6, 4.0, 3.2],
+                        backgroundColor: 'rgba(102, 126, 234, 0.8)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {y: {beginAtZero: true, ticks: {color: '#9ca3af'}}},
+                    plugins: {legend: {labels: {color: '#e8eaed'}}}
+                }
+            });
+
+            // Operations Chart
+            new Chart(document.getElementById('operationsChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Completed', 'Ongoing', 'Delayed', 'Not Started'],
+                    datasets: [{
+                        data: [117, 25, 4, 11],
+                        backgroundColor: ['#10b981', '#3b82f6', '#ef4444', '#f59e0b']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {legend: {labels: {color: '#e8eaed'}}}
+                }
+            });
+        };
+    </script>
+</body>
+</html>
